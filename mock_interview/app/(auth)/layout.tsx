@@ -1,9 +1,9 @@
-import React from 'react'
+import {ReactNode} from 'react'
 
-const Layout = () => {
+const AuthLayout = ({children} : {children: ReactNode}) => {
   return (
-    <div>Layout</div>
+    <div className='flex items-center justify-center mx-auto max-w-7xl min-h-screen max-sm:px-4 max-sm:py-8'>{children}</div>
   )
 }
 
-export default Layout
+export default AuthLayout
