@@ -4,7 +4,8 @@ import Image from 'next/image'
 import { cn } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 import {vapi} from '@/lib/vapi.sdk'
-import {interviewer} from "@/constants"
+import {interviewer} from "@/constants";
+import { createFeedback } from '@/lib/actions/general.action';
 
 enum CallStatus{
     INACTIVE ='INACTIVE',
@@ -61,12 +62,15 @@ const Agent = ({userName, userId, type, interviewId, questions } : AgentProps) =
 
     }, [])
     const handleGenerateFeedback = async(messages: SavedMessage[]) => {
-        const {success, id} = {
-            success : true,
-            id: 'feedback-id'
-        }
+        const {success, feedbackId: id} = await createFeedback({
+            interviewId : interviewId!,
+            userId : userId!,
+            transcript : messages
+        })
+          
+        
         if(success && id){
-            router.push(`/inyerview/${interviewId}/feedback`)
+            router.push(`/interview/${interviewId}/feedback`)
         } else {
             console.log('Error saving feedback')
             router.push('/')
@@ -86,6 +90,8 @@ const Agent = ({userName, userId, type, interviewId, questions } : AgentProps) =
     }, [messages, callStatus, type, userId])
 
     const handleCall = async () => {
+        console.log("VAPI Workflow ID:", process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
+
         setCallStatus(CallStatus.CONNECTING)
         if(type === 'generate'){
             await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
@@ -102,10 +108,10 @@ const Agent = ({userName, userId, type, interviewId, questions } : AgentProps) =
             if(questions){
                 formattedQuestions = questions.map((question) => `- ${question}`).join('\n')
             }
-            await vapi.start('interviewer', {
+            await vapi.start(interviewer, {
                 variableValues: {
                  questions: formattedQuestions,
-                 userid: userId || '',  
+                //  userid: userId || '',  
              },
              clientMessages: [],      
              serverMessages: [],
