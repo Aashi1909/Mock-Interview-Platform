@@ -5,10 +5,6 @@ import { getFirestore } from "firebase-admin/firestore";
 
 const initFirebaseAdmin = () =>{
     const apps = getApps();
-    console.log("projectId:", process.env.FIREBASE_PROJECT_ID);
-    console.log("clientEmail:", process.env.FIREBASE_CLIENT_EMAIL);
-    console.log("privateKey:", process.env.FIREBASE_PRIVATE_KEY ? "loaded" : "missing");
-
     if(!apps.length){
         initializeApp({
             credential :  cert({

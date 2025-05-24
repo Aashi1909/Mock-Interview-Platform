@@ -15,7 +15,6 @@ const Feedback = async ({ params }: RouteParams) => {
   const user = await getCurrentUser();
 
   const interview = await getInterviewById(id);
-  console.log(interview, "id");
   if (!interview) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
@@ -23,7 +22,6 @@ const Feedback = async ({ params }: RouteParams) => {
     userId: user?.id!,
   });
 
-  console.log(feedback, "feedback");
 
   return (
     <section className="section-feedback">
